@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skin Gym - Client Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #f0f0f0;
+            padding: 32px 0;
+            margin-bottom: 48px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -0.02em;
+        }
+
+        .refresh-btn {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .refresh-btn:hover {
+            background: #333;
+            transform: translateY(-1px);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 24px;
+            letter-spacing: -0.01em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            border: 1px solid #f0f0f0;
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            border-color: #e0e0e0;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1a1a1a;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            border: 1px solid #f0f0f0;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 24px;
+            letter-spacing: -0.01em;
+        }
+
+        .purchase-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .purchase-item:last-child {
+            border-bottom: none;
+        }
+
+        .purchase-client {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .purchase-details {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .chart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .chart-item:last-child {
+            border-bottom: none;
+        }
+
+        .chart-month {
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .chart-value {
+            font-weight: 600;
+            color: #000;
+            background: #f8f8f8;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .full-width-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            border: 1px solid #f0f0f0;
+            margin-bottom: 48px;
+        }
+
+        .load-btn {
+            background: #f8f8f8;
+            color: #1a1a1a;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 24px;
+        }
+
+        .load-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .membership-item {
+            padding: 20px;
+            margin-bottom: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+        }
+
+        .membership-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .membership-details {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .membership-type {
+            display: inline-block;
+            background: #e8f5e8;
+            color: #28a745;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-number {
+                font-size: 36px;
+            }
+
+            .card {
+                padding: 24px;
+            }
+        }
+
+        .loading {
+            color: #999;
+            font-style: italic;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 32px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">Skin Gym</h1>
+                <button class="refresh-btn" onclick="loadAllData()">Refresh</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalMembers">—</div>
+                <div class="stat-label">Active Members</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-number" id="newMembersThisMonth">—</div>
+                <div class="stat-label">New This Month</div>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="card">
+                <h2 class="card-title">Recent Purchases</h2>
+                <div id="recentPurchases" class="loading">Loading...</div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Monthly Growth</h2>
+                <div id="monthlyChart" class="loading">Loading...</div>
+            </div>
+        </div>
+
+        <div class="full-width-card">
+            <h2 class="card-title">All Memberships</h2>
+            <button class="load-btn" onclick="loadMemberships()">View All Members</button>
+            <div id="allMemberships"></div>
+        </div>
+    </main>
+
+    <script>
+        async function loadTotalMembers() {
+            try {
+                const response = await fetch('/api/analytics/total-active-members');
+                const data = await response.json();
+                document.getElementById('totalMembers').textContent = data.total_active_members;
+            } catch (error) {
+                document.getElementById('totalMembers').textContent = '—';
+            }
+        }
+
+        async function loadMonthlyNewMembers() {
+            try {
+                const response = await fetch('/api/analytics/monthly-new-members');
+                const data = await response.json();
+                const currentMonth = new Date().getMonth() + 1;
+                const thisMonth = data.find(item => parseInt(item.month) === currentMonth);
+                document.getElementById('newMembersThisMonth').textContent = thisMonth ? thisMonth.new_members : 0;
+                
+                // Display chart data
+                let chartHtml = '';
+                data.forEach(item => {
+                    const monthName = new Date(2023, item.month - 1).toLocaleString('default', { month: 'long' });
+                    chartHtml += `<div class="chart-item">
+                        <span class="chart-month">${monthName}</span>
+                        <span class="chart-value">${item.new_members}</span>
+                    </div>`;
+                });
+                document.getElementById('monthlyChart').innerHTML = chartHtml || '<div class="empty-state">No data available</div>';
+            } catch (error) {
+                document.getElementById('newMembersThisMonth').textContent = '—';
+                document.getElementById('monthlyChart').innerHTML = '<div class="empty-state">Error loading chart</div>';
+            }
+        }
+
+        async function loadRecentPurchases() {
+            try {
+                const response = await fetch('/api/purchases/recent?days=30');
+                const data = await response.json();
+                let html = '';
+                data.slice(0, 8).forEach(purchase => {
+                    html += `<div class="purchase-item">
+                        <div class="purchase-client">${purchase.client_name}</div>
+                        <div class="purchase-details">
+                            ${purchase.product_name} • Qty: ${purchase.quantity} • $${purchase.total_amount}
+                            <br><small>${new Date(purchase.purchase_date).toLocaleDateString()}</small>
+                        </div>
+                    </div>`;
+                });
+                document.getElementById('recentPurchases').innerHTML = html || '<div class="empty-state">No recent purchases</div>';
+            } catch (error) {
+                document.getElementById('recentPurchases').innerHTML = '<div class="empty-state">Error loading purchases</div>';
+            }
+        }
+
+        async function loadMemberships() {
+            try {
+                const response = await fetch('/api/memberships');
+                const data = await response.json();
+                let html = '';
+                data.slice(0, 15).forEach(membership => {
+                    html += `<div class="membership-item">
+                        <div class="membership-name">${membership.name}</div>
+                        <div class="membership-details">
+                            ${membership.email}<br>
+                            ${membership.current_status === 'active' ? 
+                                `${membership.days_remaining} days remaining` : 'Expired'}
+                            • End date: ${new Date(membership.end_date).toLocaleDateString()}
+                        </div>
+                        <span class="membership-type">${membership.membership_type}</span>
+                    </div>`;
+                });
+                if (data.length > 15) {
+                    html += `<div class="empty-state">... and ${data.length - 15} more members</div>`;
+                }
+                document.getElementById('allMemberships').innerHTML = html || '<div class="empty-state">No memberships found</div>';
+            } catch (error) {
+                document.getElementById('allMemberships').innerHTML = '<div class="empty-state">Error loading memberships</div>';
+            }
+        }
+
+        function loadAllData() {
+            loadTotalMembers();
+            loadMonthlyNewMembers();
+            loadRecentPurchases();
+        }
+
+        // Load data when page loads
+        window.onload = function() {
+            loadAllData();
+        };
+    </script>
+</body>
+</html>

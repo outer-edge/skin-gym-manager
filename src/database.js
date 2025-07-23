@@ -4,7 +4,8 @@ const path = require('path');
 class Database {
   constructor() {
     // Use in-memory database for production (Railway)
-    const dbPath = process.env.NODE_ENV === 'production' 
+    const isProduction = process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT;
+    const dbPath = isProduction 
       ? ':memory:' 
       : path.join(__dirname, '../data/skin-gym.db');
     

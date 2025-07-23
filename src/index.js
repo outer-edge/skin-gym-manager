@@ -15,12 +15,32 @@ if (process.env.RAILWAY_ENVIRONMENT) {
 const skinGym = new SkinGymManager();
 
 // Populate sample data after initialization
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT) {
   setTimeout(async () => {
     console.log('Populating sample data for production...');
-    const populateData = require('../populate-data.js');
-    await populateData();
-    console.log('Sample data populated!');
+    try {
+      // Add sample clients directly using the existing manager
+      await skinGym.addClient('Ella Lopez', 'ella.lopez@email.com', '555-0001', 'Premium', 12);
+      await skinGym.addClient('Sofia Jones', 'sofia.jones@email.com', '555-0002', 'VIP', 24);
+      await skinGym.addClient('Madison Green', 'madison.green@email.com', '555-0003', 'Basic', 6);
+      
+      // Add 54 more to reach 57 total
+      for (let i = 4; i <= 57; i++) {
+        const firstName = ['Emma', 'Liam', 'Olivia', 'Noah', 'Ava', 'Oliver'][i % 6];
+        const lastName = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones'][i % 5];
+        await skinGym.addClient(
+          `${firstName} ${lastName}`,
+          `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@email.com`,
+          `555-${String(i).padStart(4, '0')}`,
+          ['Basic', 'Standard', 'Premium', 'VIP'][i % 4],
+          [3, 6, 12, 24][i % 4]
+        );
+      }
+      
+      console.log('Sample data populated - 57 members added!');
+    } catch (error) {
+      console.error('Error populating data:', error);
+    }
   }, 2000);
 }
 

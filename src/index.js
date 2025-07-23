@@ -7,14 +7,22 @@ const SkinGymManager = require('./skinGymManager');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// For Railway deployment - setup data on first run
-const dbPath = path.join(__dirname, '../data/skin-gym.db');
-if (!fs.existsSync(dbPath)) {
-  console.log('First run detected - populating sample data...');
-  require('../populate-data.js');
+// Set production environment for Railway
+if (process.env.RAILWAY_ENVIRONMENT) {
+  process.env.NODE_ENV = 'production';
 }
 
 const skinGym = new SkinGymManager();
+
+// Populate sample data after initialization
+if (process.env.NODE_ENV === 'production') {
+  setTimeout(async () => {
+    console.log('Populating sample data for production...');
+    const populateData = require('../populate-data.js');
+    await populateData();
+    console.log('Sample data populated!');
+  }, 2000);
+}
 
 app.use(cors());
 app.use(express.json());

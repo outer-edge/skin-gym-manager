@@ -3,7 +3,18 @@ const path = require('path');
 
 class Database {
   constructor() {
-    this.db = new sqlite3.Database(path.join(__dirname, '../data/skin-gym.db'));
+    // Use in-memory database for production (Railway)
+    const dbPath = process.env.NODE_ENV === 'production' 
+      ? ':memory:' 
+      : path.join(__dirname, '../data/skin-gym.db');
+    
+    this.db = new sqlite3.Database(dbPath, (err) => {
+      if (err) {
+        console.error('Database error:', err);
+      } else {
+        console.log('Connected to database:', dbPath);
+      }
+    });
     this.init();
   }
 

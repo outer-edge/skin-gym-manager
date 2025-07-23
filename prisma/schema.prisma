@@ -1,0 +1,333 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Authentication & Roles
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String?
+  role          UserRole  @default(STAFF)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  sessions      Session[]
+  activityLogs  ActivityLog[]
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum UserRole {
+  ADMIN
+  STAFF
+  VIEW_ONLY
+}
+
+// Member Management
+model Member {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  phone             String?
+  firstName         String
+  lastName          String
+  dateOfBirth       DateTime?
+  joinDate          DateTime  @default(now())
+  status            MemberStatus @default(ACTIVE)
+  membershipType    MembershipType
+  
+  // Marketing Attribution
+  source            String?   // e.g., "Facebook Ad", "Instagram", "Referral"
+  campaignId        String?
+  referredBy        String?   // Reference to another member
+  
+  // Contact Preferences
+  emailOptIn        Boolean   @default(true)
+  smsOptIn          Boolean   @default(true)
+  
+  // External IDs
+  aglowCustomerId   String?   @unique // Integration with Aglow payment system
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  // Relations
+  visits            Visit[]
+  purchases         Purchase[]
+  appointments      Appointment[]
+  memberships       Membership[]
+  notes             MemberNote[]
+  riskAssessments   RiskAssessment[]
+  campaign          Campaign? @relation(fields: [campaignId], references: [id])
+  referrer          Member?   @relation("MemberReferrals", fields: [referredBy], references: [id])
+  referrals         Member[]  @relation("MemberReferrals")
+  communications    Communication[]
+}
+
+enum MemberStatus {
+  ACTIVE
+  INACTIVE
+  PAUSED
+  CANCELLED
+}
+
+enum MembershipType {
+  BASIC
+  STANDARD
+  PREMIUM
+  VIP
+}
+
+// Membership History
+model Membership {
+  id              String    @id @default(cuid())
+  memberId        String
+  membershipType  MembershipType
+  startDate       DateTime
+  endDate         DateTime?
+  status          MembershipStatus @default(ACTIVE)
+  price           Float
+  paymentMethod   String?
+  
+  member          Member    @relation(fields: [memberId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+enum MembershipStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  UPGRADED
+  DOWNGRADED
+}
+
+// Visit Tracking
+model Visit {
+  id              String    @id @default(cuid())
+  memberId        String
+  visitDate       DateTime  @default(now())
+  duration        Int?      // in minutes
+  services        String[]  // Array of services used
+  staffId         String?
+  notes           String?
+  
+  member          Member    @relation(fields: [memberId], references: [id])
+  createdAt       DateTime  @default(now())
+}
+
+// Product Purchases
+model Purchase {
+  id              String    @id @default(cuid())
+  memberId        String
+  productId       String
+  quantity        Int       @default(1)
+  unitPrice       Float
+  totalAmount     Float
+  purchaseDate    DateTime  @default(now())
+  paymentMethod   String?
+  
+  member          Member    @relation(fields: [memberId], references: [id])
+  product         Product   @relation(fields: [productId], references: [id])
+  createdAt       DateTime  @default(now())
+}
+
+model Product {
+  id              String    @id @default(cuid())
+  name            String
+  description     String?
+  category        String
+  price           Float
+  sku             String?   @unique
+  isActive        Boolean   @default(true)
+  
+  purchases       Purchase[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Appointments
+model Appointment {
+  id              String    @id @default(cuid())
+  memberId        String
+  scheduledDate   DateTime
+  duration        Int       // in minutes
+  service         String
+  staffId         String?
+  status          AppointmentStatus @default(SCHEDULED)
+  notes           String?
+  
+  member          Member    @relation(fields: [memberId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+  RESCHEDULED
+}
+
+// Marketing Campaigns
+model Campaign {
+  id              String    @id @default(cuid())
+  name            String
+  type            String    // e.g., "Facebook", "Instagram", "Email", "Referral"
+  startDate       DateTime
+  endDate         DateTime?
+  budget          Float?
+  targetAudience  String?
+  status          CampaignStatus @default(ACTIVE)
+  
+  // Performance Metrics
+  impressions     Int       @default(0)
+  clicks          Int       @default(0)
+  conversions     Int       @default(0)
+  spend           Float     @default(0)
+  
+  members         Member[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+enum CampaignStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  COMPLETED
+}
+
+// Risk Assessment for Retention
+model RiskAssessment {
+  id                    String    @id @default(cuid())
+  memberId              String
+  assessmentDate        DateTime  @default(now())
+  riskScore             Int       // 0-100, higher = more at risk
+  
+  // Risk Factors
+  daysSinceLastVisit    Int
+  daysSinceLastPurchase Int
+  missedAppointments    Int
+  emailEngagement       Float     // 0-1 engagement rate
+  visitFrequencyChange  Float     // % change in visit frequency
+  hasUpcomingAppointment Boolean
+  paymentIssues         Int       @default(0)
+  
+  // Recommendations
+  recommendedActions    String[]
+  priority              RiskPriority
+  
+  member                Member    @relation(fields: [memberId], references: [id])
+  createdAt             DateTime  @default(now())
+}
+
+enum RiskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+// Member Notes & Communications
+model MemberNote {
+  id              String    @id @default(cuid())
+  memberId        String
+  note            String
+  category        String?   // e.g., "General", "Health", "Preference"
+  createdBy       String
+  isPrivate       Boolean   @default(false)
+  
+  member          Member    @relation(fields: [memberId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Communication Tracking
+model Communication {
+  id              String    @id @default(cuid())
+  memberId        String
+  type            CommunicationType
+  subject         String?
+  content         String?
+  sentAt          DateTime
+  openedAt        DateTime?
+  clickedAt       DateTime?
+  status          CommunicationStatus
+  
+  member          Member    @relation(fields: [memberId], references: [id])
+  createdAt       DateTime  @default(now())
+}
+
+enum CommunicationType {
+  EMAIL
+  SMS
+  PUSH_NOTIFICATION
+  IN_APP
+}
+
+enum CommunicationStatus {
+  SENT
+  DELIVERED
+  OPENED
+  CLICKED
+  BOUNCED
+  FAILED
+}
+
+// Activity Logging
+model ActivityLog {
+  id              String    @id @default(cuid())
+  userId          String
+  action          String
+  entityType      String?   // e.g., "Member", "Campaign", "Product"
+  entityId        String?
+  metadata        Json?
+  ipAddress       String?
+  
+  user            User      @relation(fields: [userId], references: [id])
+  createdAt       DateTime  @default(now())
+}
+
+// Analytics & Reporting
+model DailyMetrics {
+  id                String    @id @default(cuid())
+  date              DateTime  @unique
+  
+  // Member Metrics
+  totalMembers      Int
+  activeMembers     Int
+  newMembers        Int
+  churnedMembers    Int
+  
+  // Revenue Metrics
+  totalRevenue      Float
+  productRevenue    Float
+  membershipRevenue Float
+  
+  // Engagement Metrics
+  totalVisits       Int
+  uniqueVisitors    Int
+  avgVisitDuration  Float
+  
+  // Risk Metrics
+  atRiskMembers     Int
+  criticalRiskMembers Int
+  
+  createdAt         DateTime  @default(now())
+}

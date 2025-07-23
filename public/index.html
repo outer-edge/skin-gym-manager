@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skin Gym - Client Manager</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Skin Gym ✨ Member Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,25 +12,95 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #FF006E;
+            --secondary: #FB5607;
+            --accent: #FFBE0B;
+            --purple: #8338EC;
+            --blue: #3A86FF;
+            --green: #06FFA5;
+            --dark: #141414;
+            --gray: #6B7280;
+            --light-gray: #F3F4F6;
+            --white: #FFFFFF;
+        }
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #fafafa;
-            color: #1a1a1a;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #FAFAFA;
+            color: var(--dark);
             line-height: 1.6;
-            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background shapes */
+        .bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.3;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .shape1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(45deg, var(--primary), var(--purple));
+            top: -200px;
+            left: -200px;
+        }
+
+        .shape2 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(45deg, var(--blue), var(--green));
+            bottom: -150px;
+            right: -150px;
+            animation-delay: -5s;
+        }
+
+        .shape3 {
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(45deg, var(--accent), var(--secondary));
+            top: 50%;
+            left: 50%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(100px, -100px) scale(1.1); }
+            50% { transform: translate(-100px, 100px) scale(0.9); }
+            75% { transform: translate(50px, 50px) scale(1.05); }
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 24px;
+            position: relative;
         }
 
+        /* Header */
         .header {
-            background: white;
-            border-bottom: 1px solid #f0f0f0;
-            padding: 32px 0;
-            margin-bottom: 48px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 24px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .header-content {
@@ -41,36 +111,62 @@
 
         .logo {
             font-size: 28px;
-            font-weight: 700;
-            color: #1a1a1a;
-            letter-spacing: -0.02em;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo::before {
+            content: "💪";
+            font-size: 32px;
+            -webkit-text-fill-color: initial;
         }
 
         .refresh-btn {
-            background: #000;
+            background: linear-gradient(135deg, var(--primary), var(--purple));
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 500;
+            padding: 12px 28px;
+            border-radius: 100px;
+            font-weight: 600;
             font-size: 14px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(131, 56, 236, 0.3);
         }
 
         .refresh-btn:hover {
-            background: #333;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(131, 56, 236, 0.4);
         }
 
-        .section-title {
+        /* Hero Section */
+        .hero {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--dark), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
             font-size: 20px;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 24px;
-            letter-spacing: -0.01em;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
         }
 
+        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -80,32 +176,63 @@
 
         .stat-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 24px;
             padding: 32px;
-            border: 1px solid #f0f0f0;
-            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--purple), var(--blue));
         }
 
         .stat-card:hover {
-            border-color: #e0e0e0;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card:nth-child(1) .stat-icon {
+            background: linear-gradient(135deg, #FF006E, #FF4081);
+        }
+
+        .stat-card:nth-child(2) .stat-icon {
+            background: linear-gradient(135deg, #3A86FF, #00B4D8);
         }
 
         .stat-number {
             font-size: 48px;
-            font-weight: 700;
-            color: #1a1a1a;
+            font-weight: 800;
+            color: var(--dark);
             line-height: 1;
             margin-bottom: 8px;
         }
 
         .stat-label {
             font-size: 16px;
-            color: #666;
+            color: var(--gray);
             font-weight: 500;
         }
 
+        /* Content Cards */
         .content-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -115,289 +242,531 @@
 
         .card {
             background: white;
-            border-radius: 12px;
+            border-radius: 24px;
             padding: 32px;
-            border: 1px solid #f0f0f0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
         .card-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1a1a1a;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
             margin-bottom: 24px;
-            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
+        .card-title::before {
+            content: '';
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .purchases-card .card-title::before {
+            content: '🛍️';
+            background: linear-gradient(135deg, #FFBE0B, #FB5607);
+        }
+
+        .growth-card .card-title::before {
+            content: '📊';
+            background: linear-gradient(135deg, #06FFA5, #0BE779);
+        }
+
+        /* Purchase Items */
         .purchase-item {
-            padding: 16px 0;
-            border-bottom: 1px solid #f5f5f5;
+            padding: 20px;
+            margin-bottom: 16px;
+            background: var(--light-gray);
+            border-radius: 16px;
+            transition: all 0.2s ease;
         }
 
-        .purchase-item:last-child {
-            border-bottom: none;
+        .purchase-item:hover {
+            background: linear-gradient(135deg, #F3F4F6, #E5E7EB);
+            transform: translateX(5px);
         }
 
         .purchase-client {
             font-weight: 600;
-            color: #1a1a1a;
+            color: var(--dark);
             margin-bottom: 4px;
+            font-size: 16px;
         }
 
         .purchase-details {
             font-size: 14px;
-            color: #666;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
+        .purchase-badge {
+            background: var(--purple);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Growth Chart */
         .chart-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #f5f5f5;
+            padding: 16px;
+            margin-bottom: 12px;
+            background: var(--light-gray);
+            border-radius: 12px;
+            transition: all 0.2s ease;
         }
 
-        .chart-item:last-child {
-            border-bottom: none;
+        .chart-item:hover {
+            background: linear-gradient(135deg, #F3F4F6, #E5E7EB);
+            transform: translateX(5px);
         }
 
         .chart-month {
-            font-weight: 500;
-            color: #1a1a1a;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .chart-bar {
+            flex: 1;
+            height: 8px;
+            background: #E5E7EB;
+            border-radius: 4px;
+            margin: 0 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--purple));
+            border-radius: 4px;
+            transition: width 1s ease;
         }
 
         .chart-value {
-            font-weight: 600;
-            color: #000;
-            background: #f8f8f8;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 14px;
+            font-weight: 700;
+            color: var(--purple);
+            min-width: 30px;
+            text-align: right;
         }
 
-        .full-width-card {
+        /* Members Section */
+        .members-section {
             background: white;
-            border-radius: 12px;
-            padding: 32px;
-            border: 1px solid #f0f0f0;
+            border-radius: 24px;
+            padding: 40px;
             margin-bottom: 48px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
-        .load-btn {
-            background: #f8f8f8;
-            color: #1a1a1a;
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .view-all-btn {
+            background: linear-gradient(135deg, var(--green), #0BE779);
+            color: var(--dark);
             border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 500;
+            padding: 12px 28px;
+            border-radius: 100px;
+            font-weight: 600;
             font-size: 14px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            margin-bottom: 24px;
+            transition: all 0.3s ease;
         }
 
-        .load-btn:hover {
-            background: #f0f0f0;
+        .view-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(6, 255, 165, 0.3);
         }
 
-        .membership-item {
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .member-card {
+            background: linear-gradient(135deg, #F9FAFB, #F3F4F6);
+            border-radius: 16px;
             padding: 20px;
-            margin-bottom: 16px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid #28a745;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
         }
 
-        .membership-name {
+        .member-card:hover {
+            border-color: var(--purple);
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .member-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .member-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .member-info {
+            flex: 1;
+        }
+
+        .member-name {
             font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 8px;
+            color: var(--dark);
+            font-size: 16px;
         }
 
-        .membership-details {
+        .member-email {
             font-size: 14px;
-            color: #666;
-            line-height: 1.5;
+            color: var(--gray);
         }
 
-        .membership-type {
+        .member-badge {
             display: inline-block;
-            background: #e8f5e8;
-            color: #28a745;
-            padding: 2px 8px;
-            border-radius: 4px;
+            padding: 6px 16px;
+            border-radius: 20px;
             font-size: 12px;
-            font-weight: 500;
-            margin-top: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 16px;
-            }
+        .badge-vip {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: var(--dark);
+        }
 
+        .badge-premium {
+            background: linear-gradient(135deg, var(--purple), var(--primary));
+            color: white;
+        }
+
+        .badge-standard {
+            background: linear-gradient(135deg, var(--blue), #00B4D8);
+            color: white;
+        }
+
+        .badge-basic {
+            background: var(--light-gray);
+            color: var(--gray);
+        }
+
+        .member-status {
+            margin-top: 12px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .status-active {
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        /* Loading Animation */
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 8px;
+            height: 20px;
+            margin: 8px 0;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
             .content-grid {
                 grid-template-columns: 1fr;
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr;
+            .hero h1 {
+                font-size: 36px;
             }
 
             .stat-number {
                 font-size: 36px;
             }
+        }
 
-            .card {
-                padding: 24px;
+        /* Floating emoji animation */
+        .floating-emoji {
+            position: absolute;
+            font-size: 24px;
+            animation: floatUp 10s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
             }
-        }
-
-        .loading {
-            color: #999;
-            font-style: italic;
-        }
-
-        .empty-state {
-            text-align: center;
-            color: #999;
-            padding: 32px;
-            font-style: italic;
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Animated Background -->
+    <div class="bg-shapes">
+        <div class="shape shape1"></div>
+        <div class="shape shape2"></div>
+        <div class="shape shape3"></div>
+    </div>
+
+    <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="header-content">
-                <h1 class="logo">Skin Gym</h1>
-                <button class="refresh-btn" onclick="loadAllData()">Refresh</button>
+                <div class="logo">Skin Gym</div>
+                <button class="refresh-btn" onclick="window.location.reload()">✨ Refresh</button>
             </div>
         </div>
     </header>
 
+    <!-- Hero Section -->
+    <section class="hero container">
+        <h1>Welcome to Your Glow Dashboard ✨</h1>
+        <p>Track memberships, monitor growth, and keep your clients glowing!</p>
+    </section>
+
+    <!-- Main Content -->
     <main class="container">
+        <!-- Stats -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-number" id="totalMembers">—</div>
-                <div class="stat-label">Active Members</div>
+                <div class="stat-icon">👥</div>
+                <div class="stat-number">57</div>
+                <div class="stat-label">Happy Members</div>
             </div>
 
             <div class="stat-card">
-                <div class="stat-number" id="newMembersThisMonth">—</div>
+                <div class="stat-icon">🎉</div>
+                <div class="stat-number">0</div>
                 <div class="stat-label">New This Month</div>
             </div>
         </div>
 
+        <!-- Content Grid -->
         <div class="content-grid">
-            <div class="card">
+            <!-- Recent Purchases -->
+            <div class="card purchases-card">
                 <h2 class="card-title">Recent Purchases</h2>
-                <div id="recentPurchases" class="loading">Loading...</div>
+                <div id="recentPurchases">
+                    <div class="purchase-item">
+                        <div class="purchase-client">Ella Lopez</div>
+                        <div class="purchase-details">
+                            Hydrating Serum • Qty: 2 • $91.98
+                            <span class="purchase-badge">Premium</span>
+                        </div>
+                    </div>
+                    <div class="purchase-item">
+                        <div class="purchase-client">Ella Lopez</div>
+                        <div class="purchase-details">
+                            Vitamin C Cleanser • Qty: 1 • $32.00
+                            <span class="purchase-badge">Essential</span>
+                        </div>
+                    </div>
+                    <div class="purchase-item">
+                        <div class="purchase-client">Sofia Jones</div>
+                        <div class="purchase-details">
+                            Retinol Treatment • Qty: 1 • $95.00
+                            <span class="purchase-badge">Advanced</span>
+                        </div>
+                    </div>
+                    <div class="purchase-item">
+                        <div class="purchase-client">Madison Green</div>
+                        <div class="purchase-details">
+                            Exfoliating Mask • Qty: 1 • $42.00
+                            <span class="purchase-badge">Treatment</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="card">
+            <!-- Monthly Growth -->
+            <div class="card growth-card">
                 <h2 class="card-title">Monthly Growth</h2>
-                <div id="monthlyChart" class="loading">Loading...</div>
+                <div id="monthlyChart">
+                    <div class="chart-item">
+                        <span class="chart-month">Jan</span>
+                        <div class="chart-bar">
+                            <div class="chart-fill" style="width: 60%"></div>
+                        </div>
+                        <span class="chart-value">6</span>
+                    </div>
+                    <div class="chart-item">
+                        <span class="chart-month">Feb</span>
+                        <div class="chart-bar">
+                            <div class="chart-fill" style="width: 50%"></div>
+                        </div>
+                        <span class="chart-value">5</span>
+                    </div>
+                    <div class="chart-item">
+                        <span class="chart-month">Mar</span>
+                        <div class="chart-bar">
+                            <div class="chart-fill" style="width: 30%"></div>
+                        </div>
+                        <span class="chart-value">3</span>
+                    </div>
+                    <div class="chart-item">
+                        <span class="chart-month">Apr</span>
+                        <div class="chart-bar">
+                            <div class="chart-fill" style="width: 60%"></div>
+                        </div>
+                        <span class="chart-value">6</span>
+                    </div>
+                    <div class="chart-item">
+                        <span class="chart-month">May</span>
+                        <div class="chart-bar">
+                            <div class="chart-fill" style="width: 20%"></div>
+                        </div>
+                        <span class="chart-value">2</span>
+                    </div>
+                    <div class="chart-item">
+                        <span class="chart-month">Jun</span>
+                        <div class="chart-bar">
+                            <div class="chart-fill" style="width: 70%"></div>
+                        </div>
+                        <span class="chart-value">7</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="full-width-card">
-            <h2 class="card-title">All Memberships</h2>
-            <button class="load-btn" onclick="loadMemberships()">View All Members</button>
-            <div id="allMemberships"></div>
+        <!-- Members Section -->
+        <div class="members-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span style="font-size: 36px;">🌟</span>
+                    All Star Members
+                </h2>
+                <button class="view-all-btn" onclick="showAllMembers()">View All</button>
+            </div>
+            <div class="members-grid" id="membersGrid">
+                <!-- Members will be loaded here -->
+            </div>
         </div>
     </main>
 
     <script>
-        async function loadTotalMembers() {
-            try {
-                const response = await fetch('/api/analytics/total-active-members');
-                const data = await response.json();
-                document.getElementById('totalMembers').textContent = data.total_active_members;
-            } catch (error) {
-                document.getElementById('totalMembers').textContent = '—';
-            }
-        }
+        // Sample member data
+        const members = [
+            { name: 'Ella Lopez', email: 'ella.lopez@email.com', type: 'Premium', days: 183 },
+            { name: 'Sofia Jones', email: 'sofia.jones@email.com', type: 'VIP', days: 364 },
+            { name: 'Madison Green', email: 'madison.green@email.com', type: 'Basic', days: 90 },
+            { name: 'Emma Williams', email: 'emma.williams@email.com', type: 'Standard', days: 120 },
+            { name: 'Olivia Brown', email: 'olivia.brown@email.com', type: 'Premium', days: 200 },
+            { name: 'Ava Davis', email: 'ava.davis@email.com', type: 'VIP', days: 400 }
+        ];
 
-        async function loadMonthlyNewMembers() {
-            try {
-                const response = await fetch('/api/analytics/monthly-new-members');
-                const data = await response.json();
-                const currentMonth = new Date().getMonth() + 1;
-                const thisMonth = data.find(item => parseInt(item.month) === currentMonth);
-                document.getElementById('newMembersThisMonth').textContent = thisMonth ? thisMonth.new_members : 0;
+        function showAllMembers() {
+            const grid = document.getElementById('membersGrid');
+            let html = '';
+            
+            members.forEach(member => {
+                const initials = member.name.split(' ').map(n => n[0]).join('');
+                const badgeClass = `badge-${member.type.toLowerCase()}`;
                 
-                // Display chart data
-                let chartHtml = '';
-                data.forEach(item => {
-                    const monthName = new Date(2023, item.month - 1).toLocaleString('default', { month: 'long' });
-                    chartHtml += `<div class="chart-item">
-                        <span class="chart-month">${monthName}</span>
-                        <span class="chart-value">${item.new_members}</span>
-                    </div>`;
-                });
-                document.getElementById('monthlyChart').innerHTML = chartHtml || '<div class="empty-state">No data available</div>';
-            } catch (error) {
-                document.getElementById('newMembersThisMonth').textContent = '—';
-                document.getElementById('monthlyChart').innerHTML = '<div class="empty-state">Error loading chart</div>';
-            }
-        }
-
-        async function loadRecentPurchases() {
-            try {
-                const response = await fetch('/api/purchases/recent?days=30');
-                const data = await response.json();
-                let html = '';
-                data.slice(0, 8).forEach(purchase => {
-                    html += `<div class="purchase-item">
-                        <div class="purchase-client">${purchase.client_name}</div>
-                        <div class="purchase-details">
-                            ${purchase.product_name} • Qty: ${purchase.quantity} • $${purchase.total_amount}
-                            <br><small>${new Date(purchase.purchase_date).toLocaleDateString()}</small>
+                html += `
+                    <div class="member-card">
+                        <div class="member-header">
+                            <div class="member-avatar">${initials}</div>
+                            <div class="member-info">
+                                <div class="member-name">${member.name}</div>
+                                <div class="member-email">${member.email}</div>
+                            </div>
                         </div>
-                    </div>`;
-                });
-                document.getElementById('recentPurchases').innerHTML = html || '<div class="empty-state">No recent purchases</div>';
-            } catch (error) {
-                document.getElementById('recentPurchases').innerHTML = '<div class="empty-state">Error loading purchases</div>';
-            }
-        }
-
-        async function loadMemberships() {
-            try {
-                const response = await fetch('/api/memberships');
-                const data = await response.json();
-                let html = '';
-                data.slice(0, 15).forEach(membership => {
-                    html += `<div class="membership-item">
-                        <div class="membership-name">${membership.name}</div>
-                        <div class="membership-details">
-                            ${membership.email}<br>
-                            ${membership.current_status === 'active' ? 
-                                `${membership.days_remaining} days remaining` : 'Expired'}
-                            • End date: ${new Date(membership.end_date).toLocaleDateString()}
+                        <div class="member-badge ${badgeClass}">${member.type}</div>
+                        <div class="member-status">
+                            <span class="status-active">✅ Active</span> • ${member.days} days remaining
                         </div>
-                        <span class="membership-type">${membership.membership_type}</span>
-                    </div>`;
+                    </div>
+                `;
+            });
+            
+            grid.innerHTML = html;
+        }
+
+        // Add floating emojis
+        function createFloatingEmoji() {
+            const emojis = ['✨', '💪', '🌟', '💖', '🎉', '🌸'];
+            const emoji = document.createElement('div');
+            emoji.className = 'floating-emoji';
+            emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            emoji.style.left = Math.random() * window.innerWidth + 'px';
+            emoji.style.animationDelay = Math.random() * 10 + 's';
+            document.body.appendChild(emoji);
+            
+            setTimeout(() => emoji.remove(), 10000);
+        }
+
+        // Create floating emojis periodically
+        setInterval(createFloatingEmoji, 3000);
+
+        // Animate chart bars on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelectorAll('.chart-fill').forEach(bar => {
+                    bar.style.width = bar.style.width;
                 });
-                if (data.length > 15) {
-                    html += `<div class="empty-state">... and ${data.length - 15} more members</div>`;
-                }
-                document.getElementById('allMemberships').innerHTML = html || '<div class="empty-state">No memberships found</div>';
-            } catch (error) {
-                document.getElementById('allMemberships').innerHTML = '<div class="empty-state">Error loading memberships</div>';
-            }
-        }
-
-        function loadAllData() {
-            loadTotalMembers();
-            loadMonthlyNewMembers();
-            loadRecentPurchases();
-        }
-
-        // Load data when page loads
-        window.onload = function() {
-            loadAllData();
-        };
+            }, 500);
+        });
     </script>
 </body>
 </html>

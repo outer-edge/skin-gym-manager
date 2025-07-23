@@ -250,7 +250,7 @@
         <div class="container">
             <div class="header-content">
                 <h1 class="logo">Skin Gym</h1>
-                <button class="refresh-btn" onclick="window.location.reload()">Refresh</button>
+                <button class="refresh-btn" onclick="loadMockData()">Refresh</button>
             </div>
         </div>
     </header>
@@ -258,12 +258,12 @@
     <main class="container">
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-number">57</div>
+                <div class="stat-number" id="totalMembers">57</div>
                 <div class="stat-label">Active Members</div>
             </div>
 
             <div class="stat-card">
-                <div class="stat-number">0</div>
+                <div class="stat-number" id="newMembersThisMonth">0</div>
                 <div class="stat-label">New This Month</div>
             </div>
         </div>
@@ -369,6 +369,10 @@
     </main>
 
     <script>
+        function loadMockData() {
+            console.log('Data refreshed!');
+        }
+
         function showMemberships() {
             const memberships = [
                 { name: 'Samuel Hill', email: 'samuel.hill@email.com', type: 'Basic', days: 183 },
